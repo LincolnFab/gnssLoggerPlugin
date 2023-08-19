@@ -11,9 +11,35 @@ npx cap sync
 
 ## API
 
-<docgen-index></docgen-index>
+<docgen-index>
+
+* [`startGNSS()`](#startgnss)
+* [`stopGNSS()`](#stopgnss)
+
+</docgen-index>
 
 <docgen-api>
-<!-- run docgen to generate docs from the source -->
-<!-- More info: https://github.com/ionic-team/capacitor-docgen -->
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### startGNSS()
+
+```typescript
+startGNSS() => Promise<string>
+```
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
+
+### stopGNSS()
+
+```typescript
+stopGNSS() => Promise<string>
+```
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
 </docgen-api>

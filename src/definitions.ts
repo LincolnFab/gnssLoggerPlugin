@@ -1,5 +1,6 @@
-export interface gnssLoggerPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
-  startGNSS(options: { value: string }): Promise<{ value: string }>;
-  stopGNSS(options: { value: string }): Promise<{ value: string }>;
+import type { Plugin } from "@capacitor/core/types/definitions";
+
+export interface gnssLoggerPlugin extends Plugin {
+  startGNSS(): Promise<string>;
+  stopGNSS(): Promise<string>;
 }
