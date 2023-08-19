@@ -1,12 +1,18 @@
 # gnss-logger-plugin
 
-Use the mobile gnss sensor to capture raw gnss data
+Use the mobile gnss sensor to capture gnss measurements
 
 ## Install
 
 ```bash
 npm install 'path-to-plugin'
-npx cap sync
+```
+
+## Usage
+
+After installing the plug-in, import the definitions from the plug-in source directory into the file you will use
+```bash
+import { gnssLogger } from 'path-to-plugin/src'
 ```
 
 ## API
