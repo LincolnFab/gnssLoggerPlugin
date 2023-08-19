@@ -1,11 +1,11 @@
-# gnss-logger
+# gnss-logger-plugin
 
 Use the mobile gnss sensor to capture raw gnss data
 
 ## Install
 
 ```bash
-npm install gnss-logger
+npm install 'path-to-plugin'
 npx cap sync
 ```
 
