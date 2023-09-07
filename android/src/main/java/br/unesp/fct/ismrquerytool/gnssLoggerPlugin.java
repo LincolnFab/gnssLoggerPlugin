@@ -1,6 +1,7 @@
 package br.unesp.fct.ismrquerytool;
 
 // Android location library
+import android.location.GnssMeasurement;
 import android.location.GnssMeasurementsEvent;
 import android.location.GnssStatus;
 import android.location.LocationManager;
@@ -19,6 +20,14 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 
+// Object utils
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+// Time util
+import java.util.concurrent.TimeUnit;
+
 @CapacitorPlugin(name = "gnssLogger")
 public class gnssLoggerPlugin extends Plugin {
 
@@ -30,7 +39,6 @@ public class gnssLoggerPlugin extends Plugin {
 
   @PluginMethod
   public void startGNSS(PluginCall call) {
-    JSObject ret = new JSObject();
     Context context = getContext();
     locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -60,11 +68,26 @@ public class gnssLoggerPlugin extends Plugin {
     gnssMeasurementsCallback = new GnssMeasurementsEvent.Callback() {
       @Override
       public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
-          Log.i("Measurement", event.toString());
+        //Log.i("Measurement", event.toString());
 
-          JSObject ret = new JSObject();
-          ret.put("value", event.toString());
-          notifyListeners("gnssDataListenner", ret);
+        JSONArray measurementsArray = new JSONArray();
+        for (GnssMeasurement measurement : event.getMeasurements()) {
+          JSONObject measurementObj = new JSONObject();
+
+          try {
+            measurementObj.put("svid", measurement.getSvid());
+            measurementObj.put("constellationType", measurement.getConstellationType());
+            measurementObj.put("cn0DbHz", measurement.getCn0DbHz());
+            measurementObj.put("timeUnix", TimeUnit.NANOSECONDS.toSeconds(event.getClock().getTimeNanos()));
+            measurementsArray.put(measurementObj);
+          } catch (JSONException e) {
+            e.printStackTrace();
+          }
+        }
+
+        JSObject result = new JSObject();
+        result.put("value", measurementsArray);
+        notifyListeners("gnssDataListenner", result);
       }
     };
 
@@ -72,10 +95,12 @@ public class gnssLoggerPlugin extends Plugin {
       locationManager.registerGnssStatusCallback(gnssStatusListener);
       locationManager.registerGnssMeasurementsCallback(gnssMeasurementsCallback);
 
+      JSObject ret = new JSObject();
       ret.put("value", "Log started");
       call.resolve(ret);
     }
 
+    JSObject ret = new JSObject();
     ret.put("value", "Error to start log");
     call.resolve(ret);
   }

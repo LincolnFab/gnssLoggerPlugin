@@ -1,6 +1,6 @@
-import type { Plugin } from "@capacitor/core/types/definitions";
+import type { Plugin } from '@capacitor/core'
 
 export interface gnssLoggerPlugin extends Plugin {
-  startGNSS(): Promise<string>;
-  stopGNSS(): Promise<string>;
+  startGNSS(): Promise<any>;
+  stopGNSS(): Promise<any>;
 }
