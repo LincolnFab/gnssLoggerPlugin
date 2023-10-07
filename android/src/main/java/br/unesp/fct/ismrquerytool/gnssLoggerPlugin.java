@@ -26,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 // Time util
-import java.util.concurrent.TimeUnit;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 @CapacitorPlugin(name = "gnssLogger")
 public class gnssLoggerPlugin extends Plugin {
@@ -34,8 +36,6 @@ public class gnssLoggerPlugin extends Plugin {
   private LocationManager locationManager;
   private GnssStatus.Callback gnssStatusListener;
   private GnssMeasurementsEvent.Callback gnssMeasurementsCallback;
-
-  private gnssLogger implementation = new gnssLogger();
 
   @PluginMethod
   public void startGNSS(PluginCall call) {
@@ -68,18 +68,21 @@ public class gnssLoggerPlugin extends Plugin {
     gnssMeasurementsCallback = new GnssMeasurementsEvent.Callback() {
       @Override
       public void onGnssMeasurementsReceived(GnssMeasurementsEvent event) {
-        //Log.i("Measurement", event.toString());
-
+        // Criar um formato SimpleDateFormat para o formato ISO 8601
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         JSONArray measurementsArray = new JSONArray();
         for (GnssMeasurement measurement : event.getMeasurements()) {
           JSONObject measurementObj = new JSONObject();
+          Date currentDate = new Date();
 
           try {
             measurementObj.put("svid", measurement.getSvid());
             measurementObj.put("constellationType", measurement.getConstellationType());
             measurementObj.put("cn0DbHz", measurement.getCn0DbHz());
-            measurementObj.put("timeUnix", TimeUnit.NANOSECONDS.toSeconds(event.getClock().getTimeNanos()));
+            measurementObj.put("carrierFrequency", String.format("%.2f", measurement.getCarrierFrequencyHz()/1_000_000).replace(',', '.'));
+            measurementObj.put("timeISOString", sdf.format(currentDate));
             measurementsArray.put(measurementObj);
+            //Log.i("timenanos: ", String.valueOf(measurement.getReceivedSvTimeNanos()));
           } catch (JSONException e) {
             e.printStackTrace();
           }
